@@ -27,5 +27,8 @@ class Favorites(models.Model):
     realty = models.ForeignKey(Realty, on_delete=models.PROTECT)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = ('realty', 'user')
+
     def __str__(self):
         return f'user {self.user.username}  -  {self.realty}'

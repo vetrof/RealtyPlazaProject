@@ -58,6 +58,7 @@ class Realty(models.Model):
         discount_price = round(self.price * ((100 - self.discount) * 0.01))
         return discount_price
 
+
     def __str__(self):
         return f'{self.title}'
 

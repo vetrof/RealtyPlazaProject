@@ -1,15 +1,16 @@
 import folium
+from django.contrib.auth.models import User
 from django.db.models import CharField
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.db.models import Q, F, Value, IntegerField, ExpressionWrapper
 
 from map.map_operations import marker_and_maps
 from realty.models import Realty, TypeRealty
-from users.models import Subscriber
+from users.models import Subscriber, Favorites
 
 
 def index_views(request):
-
     if request.method == 'POST':
         email = request.POST.get('email')
         Subscriber.objects.create(email=email)
@@ -21,8 +22,21 @@ def index_views(request):
 
 
 def detail_views(request, id):
+    user = request.user
+
+    # add to favorite
+    if 'action' in request.GET and request.GET['action'] == 'add_to_favorites':
+        realty_instance = Realty.objects.get(pk=id)
+        user_instance = User.objects.get(username=user)
+        Favorites.objects.get_or_create(realty=realty_instance, user=user_instance)
+        return HttpResponseRedirect(request.path)
+
+    is_favorite = Favorites.objects.filter(realty_id=id, user_id=user).first()
+    is_favorite = bool(is_favorite)
+
     realty = Realty.objects.get(id=id)
-    return render(request, 'detail.html', {'realty': realty, })
+
+    return render(request, 'detail.html', {'realty': realty, 'is_favorite': is_favorite})
 
 
 def search_realty_views(request):
@@ -48,7 +62,7 @@ def search_realty_views(request):
         realtys = realtys.filter(
             (Q(discount=0) & Q(price__gte=min_p)) |
             (Q(discount__gt=0) & Q(price__gte=(min_p + (F('price') * F('discount') / 100))))
-             )
+        )
 
     if max_p:
         realtys = realtys.filter(

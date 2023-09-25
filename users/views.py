@@ -5,8 +5,9 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.views import LoginView, LogoutView
 
+from realty.models import Realty
 from users.forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
-from users.models import Profile
+from users.models import Profile, Subscriber, Favorites
 
 import time
 
@@ -18,7 +19,15 @@ def index_views(request):
 
 @login_required
 def dashboard(request):
-    return render(request, 'account/dashboard.html', {'section': 'dashboard'})
+    # delete entry from favorites
+    if 'action' in request.GET and request.GET['action'] == 'delete_from_favorites':
+        favorite_id = request.GET['id']
+        entry = Favorites.objects.filter(id=favorite_id)
+        entry.delete()
+
+    user = request.user
+    favorites = Favorites.objects.filter(user=user)
+    return render(request, 'account/dashboard.html', {'section': 'dashboard', 'favorites': favorites})
 
 
 

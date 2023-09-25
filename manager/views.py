@@ -1,5 +1,8 @@
 from django.shortcuts import render
 
+from manager.models import Manager
+
 
 def contacts_view(request):
-    return render(request, 'contacts.html')
+    managers = Manager.objects.all()
+    return render(request, 'contacts.html', {'managers': managers})

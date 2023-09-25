@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from users.models import Subscriber, Profile
+from users.models import Subscriber, Profile, Favorites
 
 
 @admin.register(Profile)
@@ -11,3 +11,4 @@ class ProfileAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Subscriber)
+admin.site.register(Favorites)

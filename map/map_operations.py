@@ -7,8 +7,7 @@ def marker_and_maps():
     realtys = Realty.objects.all()
     map_center = [49.80110956678017, 73.08109770179267]
     # city_map = folium.Map(location=map_center, zoom_start=14, control_scale=True, height='60%')
-    city_map = folium.Map(location=map_center, zoom_start=14, control_scale=True, height='70%', control=True,
-                          scrollWheelZoom=False)
+    city_map = folium.Map(location=map_center, zoom_start=14, control_scale=True, height='100%', width='100%', scrollWheelZoom=False)
 
     for realty in realtys:
         popup_html = f'''

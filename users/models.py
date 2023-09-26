@@ -21,7 +21,6 @@ class Profile(models.Model):
         return f'Profile of {self.user.username}'
 
 
-
 class Subscriber(models.Model):
     email = models.EmailField()
 

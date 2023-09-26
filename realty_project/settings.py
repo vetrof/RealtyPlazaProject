@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-3zfd)h5q$-2#d=^r&&j+a8+91o8ytca#u6b%w4rp=ne6hd!47g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['mysite.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'tbot.apps.TbotConfig',
     'social_django',
     'django_extensions',
-    'sslserver'
+    'sslserver',
+    'images',
 
 
 ]

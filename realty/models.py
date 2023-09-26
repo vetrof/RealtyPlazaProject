@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -50,6 +51,9 @@ class Realty(models.Model):
     latitude = models.FloatField(blank=True, null=True, default=0)
     longitude = models.FloatField(blank=True, null=True, default=0)
     active = models.BooleanField()
+    users_like = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                        related_name='liked',
+                                        blank=True)
 
     def get_absolute_url(self):
         return reverse('detail', args=[self.id])

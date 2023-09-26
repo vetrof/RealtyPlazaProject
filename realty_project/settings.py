@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-3zfd)h5q$-2#d=^r&&j+a8+91o8ytca#u6b%w4rp=ne6hd!47g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['mysite.com', 'localhost', '127.0.0.1']
 
 # Application definition
 
@@ -49,6 +49,9 @@ INSTALLED_APPS = [
     'message.apps.MessageConfig',
     'map.apps.MapConfig',
     'tbot.apps.TbotConfig',
+    'social_django',
+    'django_extensions',
+    'sslserver'
 
 
 ]
@@ -156,10 +159,26 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
-
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend',
+                           'users.authentication.EmailAuthBackend',
+                           'social_core.backends.google.GoogleOAuth2', ]
 
-AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend', 'users.authentication.EmailAuthBackend']
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
+
+SOCIAL_AUTH_PIPELINE = [
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'users.authentication.create_profile',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+]

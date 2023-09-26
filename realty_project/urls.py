@@ -15,6 +15,7 @@ urlpatterns = [
     path('tbot/test/', my_test_view),
     path('contacts/', contacts_view, name='contacts'),
     path('users/', include('users.urls')),
+    path('social-auth/', include('social_django.urls', namespace='social')),
 ]
 
 if settings.DEBUG:

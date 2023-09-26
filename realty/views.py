@@ -31,9 +31,7 @@ def detail_views(request, id):
         Favorites.objects.get_or_create(realty=realty_instance, user=user_instance)
         return HttpResponseRedirect(request.path)
 
-    is_favorite = Favorites.objects.filter(realty_id=id, user_id=user).first()
-    is_favorite = bool(is_favorite)
-
+    is_favorite = Favorites.objects.filter(realty_id=id, user_id=user).exists()
     realty = Realty.objects.get(id=id)
 
     return render(request, 'detail.html', {'realty': realty, 'is_favorite': is_favorite})

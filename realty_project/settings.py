@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'sslserver',
     'images',
+    'easy_thumbnails',
 
 
 ]

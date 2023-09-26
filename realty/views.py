@@ -1,9 +1,11 @@
 import folium
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import CharField
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.db.models import Q, F, Value, IntegerField, ExpressionWrapper
+from django.views.decorators.http import require_POST
 
 from map.map_operations import marker_and_maps
 from realty.models import Realty, TypeRealty
@@ -76,3 +78,24 @@ def search_realty_views(request):
         realtys = Realty.objects.filter(q_objects)
 
     return render(request, 'search.html', {'realtys': realtys, 'types': types})
+
+
+@login_required
+@require_POST
+def like_views(request):
+    print('**********')
+    realty_id = request.POST.get('id')
+    action = request.POST.get('action')
+
+    if realty_id and action:
+        try:
+            realty = Realty.objects.get(id=realty_id)
+            if action == 'like':
+                realty.users_like.add(request.user)
+            else:
+                realty.users_like.remove(request.user)
+            return JsonResponse({'status': 'ok'})
+
+        except Realty.DoesNotExist:
+            pass
+    return JsonResponse({'status': 'error'})

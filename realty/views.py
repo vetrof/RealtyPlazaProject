@@ -1,6 +1,7 @@
 import folium
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+import requests
 from django.db.models import CharField
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
@@ -24,7 +25,19 @@ def index_views(request):
 
 
 def detail_views(request, id):
+    is_favorite = {}
+    realty = Realty.objects.get(pk=id)
     user = request.user
+
+    # check user favorite status
+    if realty.users_like.filter(id=user.id).exists():
+        favorite_status = True
+    else:
+        favorite_status = False
+
+    if request.user.is_authenticated:
+        user = request.user
+        is_favorite = Favorites.objects.filter(realty_id=id, user_id=user).exists()
 
     # add to favorite
     if 'action' in request.GET and request.GET['action'] == 'add_to_favorites':
@@ -33,10 +46,7 @@ def detail_views(request, id):
         Favorites.objects.get_or_create(realty=realty_instance, user=user_instance)
         return HttpResponseRedirect(request.path)
 
-    is_favorite = Favorites.objects.filter(realty_id=id, user_id=user).exists()
-    realty = Realty.objects.get(id=id)
-
-    return render(request, 'detail.html', {'realty': realty, 'is_favorite': is_favorite})
+    return render(request, 'detail.html', {'realty': realty, 'is_favorite': is_favorite, 'favorite_status': favorite_status})
 
 
 def search_realty_views(request):
@@ -83,19 +93,21 @@ def search_realty_views(request):
 @login_required
 @require_POST
 def like_views(request):
-    print('**********')
-    realty_id = request.POST.get('id')
-    action = request.POST.get('action')
+    realty_id = request.POST.get('realty_id')
+    realty = Realty.objects.get(pk=realty_id)
+    user = request.user
 
-    if realty_id and action:
-        try:
-            realty = Realty.objects.get(id=realty_id)
-            if action == 'like':
-                realty.users_like.add(request.user)
-            else:
-                realty.users_like.remove(request.user)
-            return JsonResponse({'status': 'ok'})
+    if realty_id:
+        if realty.users_like.filter(id=user.id).exists():
+            realty.users_like.remove(request.user)
+            print(realty.users_like.filter(id=user.id).exists())
+            return JsonResponse({'action': False})
 
-        except Realty.DoesNotExist:
-            pass
+        else:
+            realty.users_like.add(request.user)
+            print(realty.users_like.filter(id=user.id).exists())
+            return JsonResponse({'action': True})
+
+
     return JsonResponse({'status': 'error'})
+

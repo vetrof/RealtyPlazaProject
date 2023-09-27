@@ -25,9 +25,11 @@ def dashboard(request):
         entry = Favorites.objects.filter(id=favorite_id)
         entry.delete()
 
+    favorite_queryset = Realty.objects.filter(users_like=request.user)
+
     user = request.user
     favorites = Favorites.objects.filter(user=user)
-    return render(request, 'account/dashboard.html', {'section': 'dashboard', 'favorites': favorites})
+    return render(request, 'account/dashboard.html', {'section': 'dashboard', 'favorites': favorites, 'favorite_queryset': favorite_queryset})
 
 
 

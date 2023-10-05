@@ -36,7 +36,7 @@ def markers_views(request):
         realtys = realtys.filter(info__iregex=text)
 
     map_center = [49.80110956678017, 73.08109770179267]
-    city_map = folium.Map(location=map_center, zoom_start=14, control_scale=True, height='100%', width='100%', scrollWheelZoom=False)
+    city_map = folium.Map(location=map_center, zoom_start=14, control_scale=True, height='100%', width='100%', scrollWheelZoom=True)
 
     for realty in realtys:
         popup_html = f'''

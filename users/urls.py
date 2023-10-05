@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
+
+from . import views
 from .views import dashboard, register, edit, LoginView
 from django.contrib.auth import views as auth_views
 # from login_app.views import user_login_old
@@ -34,6 +36,10 @@ urlpatterns = [
     path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('password-reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('password-reset/complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+
+    path('users/', views.user_list, name='user_list'),
+
+    path('users/<username>/', views.user_detail, name='user_detail'),
 
 ]
 

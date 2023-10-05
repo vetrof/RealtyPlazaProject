@@ -10,6 +10,7 @@ urlpatterns = [
     path('realty/<int:id>/', detail_views, name='detail'),
     path('search/', search_realty_views, name='search_realty'),
     path('like/', views.like_views, name='like'),
+    path('ranking/', views.realty_ranking_views, name='ranking'),
 
 ]
 

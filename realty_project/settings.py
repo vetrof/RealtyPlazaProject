@@ -14,6 +14,7 @@ from pathlib import Path
 import environ
 
 from celery import Celery
+from django.urls import reverse_lazy
 
 env = environ.Env()
 
@@ -54,11 +55,16 @@ INSTALLED_APPS = [
     'sslserver',
     'images',
     'easy_thumbnails',
+    'articles',
+    'debug_toolbar',
+    'simple_history',
+    'django_q',
 
 
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -184,3 +190,28 @@ SOCIAL_AUTH_PIPELINE = [
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
 ]
+
+
+ABSOLUTE_URL_OVERRIDES = {
+    'auth.user': lambda u: reverse_lazy('user_detail',
+    args=[u.username])
+}
+
+INTERNAL_IPS = [ '127.0.0.1', ]
+
+
+Q_CLUSTER = {
+    'name': 'DjangORM',
+    'workers': 4,
+    'retry': 600,
+    'timeout': 500,
+    'queue_limit': 50,
+    'bulk': 10,
+    'orm': 'default',
+    'catch_up': False,
+}
+
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 0
+
